@@ -81,7 +81,7 @@ sub encode_packet
 sub _encode
 {
     my ($self, $id, $val) = @_;
-    my $encoded_val = ($id << 10) | $val;
+    my $encoded_val = 0xFFFF & (($id << 10) | $val);
     return $encoded_val;
 }
 
