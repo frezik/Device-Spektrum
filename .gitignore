@@ -1,0 +1,9 @@
+Build
+Makefile.PL
+_build
+blib
+MYMETA.*
+META.*
+.build
+*.tar.gz
+*.tar.bz2
