@@ -46,9 +46,37 @@ __END__
 
 =head1 SYNOPSIS
 
+    use Device::Spektrum::Packet;
+    my $packet = Device::Spektrum::Packet->new({
+        throttle => 170,
+        aileron => 200,
+        elevator => 250,
+        rudder => 800,
+        gear => SPEKTRUM_LOW,
+        aux1 => SPEKTRUM_MIDDLE,
+        aux2 => SPEKTRUM_HIGH,
+    });
+    
+    my $encoded_packet = $packet->encode_packet;
+
 =head1 DESCRIPTION
 
-=head1 METHODS
+Spektrum is a serial protocol that is compatible with many radio controlled flight 
+controllers. Using this module allows you to craft packets compatible with these 
+flight controllers. It supports up to 7 channels.
+
+Data is sent over a serial connection with one start bit, 8 data bits, LSB, no parity, 
+and one stop bit, all at 115.9Kbps.  One wrinkle is that the signal is inverted from the 
+usual RS232 signal. If you want to connect your computer as if it were a true Spektrum 
+receiver, you will need an inverter cable.
+
+Many Open Source flight controllers also require an inverter cable to receive Spektrum 
+signals (check your flight controller's manual to see if this is the case, but it almost 
+always is). For this, you will need two inverter cables to bring the signal back to what 
+it was.  Alternatively, you can use a straight cable, if you want to do it the lazy way.
+
+Most of the interesting parts of the API is in L<Device::Spektrum::Packet>, so read those 
+docs for details.
 
 =head1 SEE ALSO
 

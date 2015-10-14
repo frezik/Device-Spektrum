@@ -98,9 +98,53 @@ __END__
 
 =head1 SYNOPSIS
 
+    use Device::Spektrum::Packet;
+    my $packet = Device::Spektrum::Packet->new({
+        throttle => 170,
+        aileron => 200,
+        elevator => 250,
+        rudder => 800,
+        gear => SPEKTRUM_LOW,
+        aux1 => SPEKTRUM_MIDDLE,
+        aux2 => SPEKTRUM_HIGH,
+    });
+    
+    my $encoded_packet = $packet->encode_packet;
+
 =head1 DESCRIPTION
 
+Represents a single packet of Spektrum data.
+
+=head1 ATTRIBUTES
+
+=over 4
+
+=item * throttle
+
+=item * aileron
+
+=item * elevator
+
+=item * rudder
+
+=item * gear
+
+=item * aux1
+
+=item * aux2
+
+=back
+
+Each attribute takes an integer. These are typically in between 170 (exported as 
+C<SPEKTRUM_LOW>) and 853 (C<SPEKTRUM_HIGH>). The protocol is technically capable of 
+values between 0 and 1023, but servos and flight controllers may not be well-behaved outside
+the typical range.
+
 =head1 METHODS
+
+=head2 encode_packet
+
+Return a byte string containing the encoded packet.
 
 =head1 LICENSE
 
