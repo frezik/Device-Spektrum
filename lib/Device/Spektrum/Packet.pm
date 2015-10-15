@@ -60,19 +60,43 @@ has $_ =>  (
     throttle aileron elevator rudder gear aux1 aux2
 };
 
+has 'field_order' => (
+    is => 'ro',
+    isa => 'ArrayRef[Str]',
+    default => sub {[qw{
+        throttle
+        aileron
+        elevator
+        rudder
+        gear
+        aux1
+        aux2
+    }]},
+);
+has 'field_id' => (
+    is => 'ro',
+    isa => 'HashRef[Str]',
+    default => sub {{
+        throttle => 'THROTTLE_ID',
+        aileron => 'AILERON_ID',
+        elevator => 'ELEVATOR_ID',
+        rudder => 'RUDDER_ID',
+        gear => 'GEAR_ID',
+        aux1 => 'AUX1_ID',
+        aux2 => 'AUX2_ID',
+    }},
+);
+
 
 sub encode_packet
 {
     my ($self) = @_;
     my $packet = pack( 'n*',
         HEADER,
-        $self->_encode( $self->THROTTLE_ID, $self->throttle ),
-        $self->_encode( $self->AILERON_ID, $self->aileron ),
-        $self->_encode( $self->ELEVATOR_ID, $self->elevator ),
-        $self->_encode( $self->RUDDER_ID, $self->rudder ),
-        $self->_encode( $self->GEAR_ID, $self->gear ),
-        $self->_encode( $self->AUX1_ID, $self->aux1 ),
-        $self->_encode( $self->AUX2_ID, $self->aux2 ),
+        map {
+            my $field_id = $self->field_id->{$_};
+            $self->_encode( $self->$field_id, $self->$_ );
+        } @{ $self->field_order },
     );
     return $packet;
 }
