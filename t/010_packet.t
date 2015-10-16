@@ -21,7 +21,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-use Test::More tests => 10;
+use Test::More tests => 3;
 use v5.14;
 use warnings;
 use Device::Spektrum::Packet;
@@ -48,32 +48,25 @@ cmp_ok( to_16bit( @encoded_packet[0,1] ), '==', 0x0100, "Packet header" );
 @encoded_packet = @encoded_packet[ 2 .. $#encoded_packet ];
 
 
-my %expected_values = (
-    map( { $_ => 1 }
-        to_16bit( (0x00 << 2), $values{throttle} ),
-        to_16bit( (0x01 << 2), $values{aileron} ),
-        to_16bit( (0x02 << 2), $values{elevator} ),
-        to_16bit( (0x03 << 2), $values{rudder} ),
-        to_16bit( (0x04 << 2), $values{gear} ),
-        to_16bit( (0x05 << 2), $values{aux1} ),
-        to_16bit( (0x06 << 2), $values{aux2} ),
-    )
+my @encoded_values = (
+    to_16bit( @encoded_packet[0,1] ),
+    to_16bit( @encoded_packet[2,3] ),
+    to_16bit( @encoded_packet[4,5] ),
+    to_16bit( @encoded_packet[6,7] ),
+    to_16bit( @encoded_packet[8,9] ),
+    to_16bit( @encoded_packet[10,11] ),
+    to_16bit( @encoded_packet[12,13] ),
 );
-while( @encoded_packet ) {
-    my $byte1 = shift @encoded_packet;
-    my $byte2 = shift @encoded_packet;
-    my $val = to_16bit( $byte1, $byte2 );
-
-    if( exists $expected_values{$val} ) {
-        pass( "Hit value '$val'" );
-        delete $expected_values{$val};
-    }
-    else {
-        fail( "Hit unexpected value '$val'" );
-    }
-}
-
-ok(! %expected_values, "All expected values hit" );
+my @expected_values = (
+    to_16bit( (0x00 << 2), $values{throttle} ),
+    to_16bit( (0x01 << 2), $values{aileron} ),
+    to_16bit( (0x02 << 2), $values{elevator} ),
+    to_16bit( (0x03 << 2), $values{rudder} ),
+    to_16bit( (0x04 << 2), $values{gear} ),
+    to_16bit( (0x05 << 2), $values{aux1} ),
+    to_16bit( (0x06 << 2), $values{aux2} ),
+);
+is_deeply( \@encoded_values, \@expected_values, "Packet encoded in order" );
 
 
 sub to_16bit
