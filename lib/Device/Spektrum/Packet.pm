@@ -32,7 +32,7 @@ use Moose;
 use namespace::autoclean;
 use base 'Exporter';
 
-use constant HEADER => 0x0100;
+use constant HEADER => 0x039b;
 use constant {
     THROTTLE_ID => 0x00,
     AILERON_ID => 0x01,
