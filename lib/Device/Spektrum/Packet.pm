@@ -131,6 +131,17 @@ __END__
         gear => SPEKTRUM_LOW,
         aux1 => SPEKTRUM_MIDDLE,
         aux2 => SPEKTRUM_HIGH,
+
+        # Optional; may correct problems with buggy implementations
+        field_order => [qw(
+            throttle
+            aileron
+            elevator
+            rudder
+            gear
+            aux1
+            aux2
+        )],
     });
     
     my $encoded_packet = $packet->encode_packet;
@@ -163,6 +174,11 @@ Each attribute takes an integer. These are typically in between 170 (exported as
 C<SPEKTRUM_LOW>) and 853 (C<SPEKTRUM_HIGH>). The protocol is technically capable of 
 values between 0 and 1023, but servos and flight controllers may not be well-behaved outside
 the typical range.
+
+There is also a C<field_order> parameter, which shouldn't be necessary, because the 
+protocol uses a few identifier bits for each channel. However, some implementations out 
+there hardcode the channel order to what common Spektrum recievers put out, so you may need 
+to work around them with this parameter.
 
 =head1 METHODS
 

@@ -55,25 +55,35 @@ __END__
         gear => SPEKTRUM_LOW,
         aux1 => SPEKTRUM_MIDDLE,
         aux2 => SPEKTRUM_HIGH,
+
+        # Optional; may correct problems with buggy implementations
+        field_order => [qw(
+            throttle
+            aileron
+            elevator
+            rudder
+            gear
+            aux1
+            aux2
+        )],
     });
     
     my $encoded_packet = $packet->encode_packet;
 
 =head1 DESCRIPTION
 
-Spektrum is a serial protocol that is compatible with many radio controlled flight 
-controllers. Using this module allows you to craft packets compatible with these 
-flight controllers. It supports up to 7 channels.
+Spektrum is a serial protocol that is compatible with many RC flight controllers. Using 
+this module allows you to craft output packets compatible with these flight controllers. It 
+supports up to 7 channels.
 
 Data is sent over a serial connection with one start bit, 8 data bits, LSB, no parity, 
-and one stop bit, all at 115.2Kbps.  One wrinkle is that the signal is inverted from the 
-usual RS232 signal. If you want to connect your computer as if it were a true Spektrum 
-receiver, you will need an inverter cable.
+and one stop bit, all at 115.2Kbps. A 22 millisecond delay may be needed in between packets;
+I had trouble getting the Naze32 to behave when the program sent data as fast as possible.
 
-Many Open Source flight controllers also require an inverter cable to receive Spektrum 
-signals (check your flight controller's manual to see if this is the case, but it almost 
-always is). For this, you will need two inverter cables to bring the signal back to what 
-it was.  Alternatively, you can use a straight cable, if you want to do it the lazy way.
+The C<field_order> parameter shouldn't be necessary, because the protocol uses a few 
+identifier bits for each channel. However, some implementations out there hardcode the 
+channel order to what common Spektrum recievers put out, so you may need to work around 
+them with this parameter.
 
 Most of the interesting parts of the API is in L<Device::Spektrum::Packet>, so read those 
 docs for details.

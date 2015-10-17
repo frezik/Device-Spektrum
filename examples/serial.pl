@@ -2,6 +2,9 @@
 use v5.14;
 use Device::SerialPort;
 use Device::Spektrum::Packet;
+use Time::HiRes qw( usleep );
+
+use constant SLEEP_TIME_MICROSECONDS => 22_000;
 
 my $PORT = shift || die "Need serial port\n";
 
@@ -22,10 +25,12 @@ while( $continue ) {
         elevator => SPEKTRUM_HIGH,
         rudder => SPEKTRUM_LOW,
         gear => SPEKTRUM_MIDDLE,
-        aux1 => SPEKTRUM_HIGH,
-        aux2 => SPEKTRUM_LOW,
+        aux1 => SPEKTRUM_LOW,
+        aux2 => SPEKTRUM_HIGH,
     });
     $serial->write( $packet->encode_packet );
+
+    usleep( SLEEP_TIME_MICROSECONDS );
 }
 
 $serial->close;
